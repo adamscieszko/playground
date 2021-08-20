@@ -1,0 +1,26 @@
+name: Release version
+
+on:
+  workflow_dispatch:
+    inputs:
+      newReleaseVersion:
+        description: 'New release version'
+        required: true
+        default: ''
+
+jobs:
+  package:
+    name: Release version
+
+    runs-on: [self-hosted, ubuntu-latest]
+
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+          ref: ${{ github.head_ref }}
+
+      - name: Set new version
+        run: |
+          git tag -a "${{ github.event.inputs.newReleaseVersion }}" -m "${{ github.event.inputs.newReleaseVersion }}"
+          git push
