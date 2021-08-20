@@ -27,10 +27,10 @@ jobs:
             annotatedTag = await github.git.createTag({
               owner: context.repo.owner,
               repo: context.repo.repo,
-              tag: ${{ github.event.inputs.newReleaseVersion }},
-              message: ${{ github.event.inputs.newReleaseVersion }},
+              tag: "${{ github.event.inputs.newReleaseVersion }}",
+              message: "${{ github.event.inputs.newReleaseVersion }}",
               object: context.sha,
-              type: 'commit',
+              type: "commit",
             })
             
             await github.git.createRef({
