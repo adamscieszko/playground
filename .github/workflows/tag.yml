@@ -20,7 +20,22 @@ jobs:
           fetch-depth: 0
           ref: ${{ github.head_ref }}
 
-      - name: Set new version
-        run: |
-          git tag -a "${{ github.event.inputs.newReleaseVersion }}" -m "${{ github.event.inputs.newReleaseVersion }}"
-          git push
+      - uses: actions/github-script@v4
+        with:
+          github-token: ${{secrets.GITHUB_TOKEN}} 
+          script: |
+            annotatedTag = await github.git.createTag({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              tag: ${{ github.event.inputs.newReleaseVersion }},
+              message: ${{ github.event.inputs.newReleaseVersion }},
+              object: context.sha,
+              type: 'commit',
+            })
+            
+            await github.git.createRef({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              ref: "refs/tags/${{ github.event.inputs.newReleaseVersion }}",
+              sha: annotatedTag.data.sha
+            })
